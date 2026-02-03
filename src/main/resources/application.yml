@@ -1,0 +1,28 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+    database: mysql
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  datasource:
+    url: jdbc:mysql://localhost:3306/defects_db?characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&zeroDateTimeBehavior=convertToNull
+    username: root
+    password: 12345678
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+server:
+  port: 8080
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG  # 打印执行的SQL
+    org.hibernate.type: TRACE  # 打印SQL参数
+
+python:
+  collect:
+    base-url: http://localhost:8000
