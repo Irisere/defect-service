@@ -1,5 +1,7 @@
 package com.example.defectservice.domain.entity;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
+import com.alibaba.excel.annotation.ExcelProperty;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.util.Date;
@@ -12,7 +14,6 @@ import java.util.Date;
 @Entity
 @Table(
         name = "standardized_defect",
-        // 为source_defect表添加联合唯一索引，若该实体对应source_defect，需修改表名并添加索引
         uniqueConstraints = @UniqueConstraint(columnNames = {"repo_id", "issue_id"})
 )
 public class StandardizedDefect {
@@ -22,54 +23,63 @@ public class StandardizedDefect {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ExcelIgnore
     private Integer id;
 
     /**
      * 仓库主键
      */
     @Column(name = "repo_id", nullable = false)
+    @ExcelIgnore
     private Integer repoId;
 
     /**
      * 平台侧缺陷ID（如GitHub的issue编号）
      */
     @Column(name = "issue_id", nullable = false, length = 50)
+    @ExcelProperty("外部IssueID")
     private String issueId;
 
     /**
      * 缺陷标题
      */
     @Column(name = "title", nullable = false, length = 500)
+    @ExcelProperty("标题")
     private String title;
 
     /**
      * 缺陷描述（支持长文本）
      */
     @Column(name = "description", nullable = false, columnDefinition = "TEXT")
+    @ExcelProperty("描述")
     private String description;
 
     /**
      * 版本信息
      */
     @Column(name = "version", length = 20)
+    @ExcelProperty("版本")
     private String version;
 
     /**
      * 复现步骤
      */
     @Column(name = "steps_to_reproduce", length = 500)
+    @ExcelProperty("复现步骤")
     private String stepsToReproduce;
 
     /**
      * 严重程度
      */
     @Column(name = "severity", length = 20)
+    @ExcelProperty("严重程度")
     private String severity;
 
     /**
      * issue的url
      */
     @Column(name = "url", nullable = false, length = 500)
+    @ExcelProperty("链接地址")
     private String url;
 
     /**
@@ -77,6 +87,7 @@ public class StandardizedDefect {
      */
     @Column(name = "created_at", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
+    @ExcelProperty("创建时间")
     private Date createdAt;
 
     /**
@@ -84,5 +95,6 @@ public class StandardizedDefect {
      */
     @Column(name = "record_at", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
+    @ExcelIgnore
     private Date recordAt;
 }

@@ -1,18 +1,29 @@
 package com.example.defectservice.service;
 
 import com.example.defectservice.domain.entity.StandardizedDefect;
+import com.example.defectservice.domain.entity.Repo;
+import com.example.defectservice.domain.entity.Project;
 import com.example.defectservice.exception.BusinessException;
 import com.example.defectservice.repository.StandardizedDefectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Optional;
+import java.util.Date;
 
 @Service
 public class StandardizedDefectService {
 
     @Autowired
     private StandardizedDefectRepository defectRepository;
+
+    @Autowired
+    private com.example.defectservice.repository.RepoRepository repoRepository;
+
+    @Autowired
+    private com.example.defectservice.repository.ProjectRepository projectRepository;
 
     /**
      * 新增/修改缺陷报告
@@ -88,5 +99,24 @@ public class StandardizedDefectService {
             throw new BusinessException("要删除的缺陷报告不存在");
         }
         defectRepository.deleteById(id);
+    }
+
+    /**
+     * 导出缺陷报告时生成标题
+     */
+    public String generateExportFileName(Integer repoId) {
+        Repo repo = repoRepository.findById(repoId)
+                .orElseThrow(() -> new BusinessException("未找到仓库信息"));
+        Project project = projectRepository.findById(repo.getProjectId())
+                .orElseThrow(() -> new BusinessException("未找到项目信息"));
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        String timeStr = sdf.format(new Date());
+
+        // 格式：缺陷报告_项目标题_仓库平台类型_导出时间
+        return String.format("缺陷报告_%s_%s_%s",
+                project.getName(),
+                repo.getPlatform(),
+                timeStr);
     }
 }

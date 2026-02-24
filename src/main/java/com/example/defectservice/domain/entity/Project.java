@@ -8,7 +8,7 @@ import lombok.Data;
  */
 @Data
 @Entity
-@Table(name = "poject") // 若数据库表名是拼写错误，建议改为project并同步数据库
+@Table(name = "project")
 public class Project {
 
     /**
