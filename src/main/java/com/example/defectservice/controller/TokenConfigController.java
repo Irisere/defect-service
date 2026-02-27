@@ -30,6 +30,24 @@ public class TokenConfigController {
     }
 
     /**
+     * 校验 Token 是否真实可用
+     * GET /api/token-config/validate/{id}
+     */
+    @GetMapping("/validate/{id}")
+    public Result<Boolean> validateToken(@PathVariable Integer id) {
+        try {
+            boolean isValid = tokenConfigService.validateToken(id);
+            if (isValid) {
+                return Result.success(Boolean.TRUE);
+            } else {
+                return Result.error("Token 已失效或权限不足");
+            }
+        } catch (BusinessException e) {
+            return Result.error(e.getMessage());
+        }
+    }
+
+    /**
      * 根据ID查询Token配置
      * GET /api/token-config/{id}
      */

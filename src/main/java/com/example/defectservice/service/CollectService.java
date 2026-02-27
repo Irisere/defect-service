@@ -1,6 +1,7 @@
 package com.example.defectservice.service;
 
 import com.example.defectservice.exception.BusinessException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,8 @@ public class CollectService {
     @Value("${python.collect.base-url}")
     private String pythonBaseUrl;   // 例如：http://localhost:8000
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    @Autowired
+    private RestTemplate restTemplate;
 
     /**
      * 调用 Python 的缺陷采集接口
