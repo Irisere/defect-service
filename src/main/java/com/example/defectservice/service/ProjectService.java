@@ -49,12 +49,8 @@ public class ProjectService {
     /**
      * 根据名称查询项目
      */
-    public Project getProjectByName(String name) {
-        Project project = projectRepository.findByName(name);
-        if (project == null) {
-            throw new BusinessException("未找到名称为" + name + "的项目");
-        }
-        return project;
+    public List<Project> searchProjectsByName(String name) {
+        return projectRepository.findByNameContaining(name);
     }
 
     /**

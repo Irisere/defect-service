@@ -43,15 +43,16 @@ public class ProjectController {
     }
 
     /**
-     * 根据名称获取项目
+     * 模糊搜索项目列表
      */
-    @GetMapping("/name/{name}")
-    public Result<Project> getProjectByName(@PathVariable String name) {
+    @GetMapping("/search")
+    public Result<List<Project>> searchProjects(@RequestParam(required = false) String name) {
         try {
-            Project project = projectService.getProjectByName(name);
-            return Result.success(project);
-        } catch (BusinessException e) {
-            return Result.error(e.getMessage());
+            // 如果 name 为空，通常返回所有项目或空列表
+            List<Project> projects = projectService.searchProjectsByName(name);
+            return Result.success(projects);
+        } catch (Exception e) {
+            return Result.error("搜索失败：" + e.getMessage());
         }
     }
 
