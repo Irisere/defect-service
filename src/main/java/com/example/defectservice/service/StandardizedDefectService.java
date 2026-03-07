@@ -29,7 +29,22 @@ public class StandardizedDefectService {
      * 新增/修改缺陷报告
      */
     public StandardizedDefect saveDefect(StandardizedDefect defect) {
-        // 核心非空校验
+        //修改逻辑
+        if (defect.getId() != null) {
+            // 如果有ID，说明是更新，先从数据库取出旧数据
+            StandardizedDefect existing = defectRepository.findById(defect.getId())
+                    .orElseThrow(() -> new BusinessException("找不到要更新的缺陷记录"));
+
+            // 只更新允许修改的字段（手动或使用 BeanUtils）
+            existing.setTitle(defect.getTitle());
+            existing.setDescription(defect.getDescription());
+            existing.setVersion(defect.getVersion());
+            existing.setStepsToReproduce(defect.getStepsToReproduce());
+            existing.setSeverity(defect.getSeverity());
+            return defectRepository.save(existing);
+        }
+
+        // 新增逻辑 核心非空校验
         if (defect.getRepoId() == null) {
             throw new BusinessException("仓库ID不能为空");
         }
