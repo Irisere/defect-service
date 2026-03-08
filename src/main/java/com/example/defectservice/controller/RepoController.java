@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api/repo")
@@ -64,6 +65,53 @@ public class RepoController {
         } catch (BusinessException e) {
             return Result.error(e.getMessage());
         }
+    }
+
+    /**
+     * 根据url导入仓库
+     */
+    @PostMapping("/import")
+    public Result<Repo> importRepo(@RequestBody Map<String, Object> payload) {
+        try {
+            String url = (String) payload.get("url");
+            Integer projectId = (Integer) payload.get("projectId");
+            if (url == null || projectId == null) {
+                return Result.error("参数不完整");
+            }
+            Repo saved = repoService.parseUrlAndCreate(url, projectId);
+            return Result.success(saved);
+        } catch (BusinessException e) {
+            return Result.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 校验仓库有效性
+     */
+    @GetMapping("/validate")
+    public Result<Boolean> validateRepo(
+            @RequestParam String platform,
+            @RequestParam String owner,
+            @RequestParam String repoName) {
+        boolean exists = repoService.checkRepoExists(platform, owner, repoName);
+        if (exists) {
+            return Result.success(true);
+        } else {
+            return Result.error("仓库不存在或无法访问（请检查是否为私有仓库）");
+        }
+    }
+
+    /**
+     * 批量校验仓库有效性
+     */
+    @PostMapping("/validate/batch")
+    public Result<Map<Integer, Boolean>> validateBatch(@RequestBody List<Repo> repos) {
+        Map<Integer, Boolean> resultMap = new HashMap<>();
+        for (Repo repo : repos) {
+            boolean exists = repoService.checkRepoExists(repo.getPlatform(), repo.getOwner(), repo.getRepoName());
+            resultMap.put(repo.getId(), exists);
+        }
+        return Result.success(resultMap);
     }
 
     /**
