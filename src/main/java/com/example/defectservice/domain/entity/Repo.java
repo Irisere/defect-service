@@ -24,7 +24,7 @@ public class Repo {
     /**
      * 项目主键
      */
-    @Column(name = "poject_id", nullable = false)
+    @Column(name = "project_id", nullable = false)
     private Integer projectId;
 
     /**
